@@ -1,0 +1,89 @@
+/*
+ * The MIT License
+ *
+ * Copyright 2016 Sebastian Sdorra.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+
+package com.github.sdorra.ssp;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
+
+/**
+ *
+ * @author Sebastian Sdorra
+ */
+public class StaticPermissionModelBuilder {
+  
+  private final ProcessingEnvironment processingEnv;
+
+  public StaticPermissionModelBuilder(ProcessingEnvironment processingEnv) {
+    this.processingEnv = processingEnv;
+  }
+  
+  public StaticPermissionModel process(TypeElement classElement){
+    if (!TypeElements.isAssignableFrom(PermissionObject.class, classElement)){
+      throw new RuntimeException(
+        "static permissions can only be generated if the target class implements the PermissionObject interface"
+      );
+    }
+    
+    StaticPermissions staticPermissions = classElement.getAnnotation(StaticPermissions.class);
+    if (staticPermissions == null) {
+      throw new RuntimeException("type element is not annotated with StaticPermissions annotation");
+    }
+    
+    String className = classElement.getSimpleName().toString();
+    String packageName = getPackageName(classElement);
+    
+    String generatedClass = staticPermissions.generatedClass();
+    if (generatedClass.isEmpty()){
+      generatedClass = className.concat("Permissions");
+    }
+    
+    return new StaticPermissionModel(
+      packageName, 
+      generatedClass, 
+      staticPermissions.value(),
+      className, 
+      convert(staticPermissions.permissions()), 
+      convert(staticPermissions.globalPermissions())
+    );
+  }
+  
+  private Iterable<Action> convert(String[] permissions){
+    List<Action> actions = new ArrayList<>();
+    for (String permission : permissions){
+      actions.add(new Action(permission, permission.toUpperCase(Locale.ENGLISH)));
+    }
+    return actions;
+  }
+  
+  private String getPackageName(TypeElement classElement) {
+    return ((PackageElement) classElement.getEnclosingElement()).getQualifiedName().toString();
+  }
+  
+}
