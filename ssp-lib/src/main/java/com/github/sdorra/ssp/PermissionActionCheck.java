@@ -25,8 +25,6 @@
 
 package com.github.sdorra.ssp;
 
-import com.google.common.base.Strings;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.subject.Subject;
@@ -62,7 +60,7 @@ public final class PermissionActionCheck<T extends PermissionObject> {
    * @throws AuthorizationException if current user lacks the required permission
    */
   public void check(String id) throws AuthorizationException {
-    subject.checkPermission(prefix.concat(Strings.nullToEmpty(id)));
+    subject.checkPermission(prefix.concat(nullToEmpty(id)));
   }
 
   /**
@@ -98,5 +96,9 @@ public final class PermissionActionCheck<T extends PermissionObject> {
    */
   public boolean isPermitted(T item) {
     return isPermitted(item.getId());
+  }
+  
+  private String nullToEmpty(String id){
+    return id == null ? "" : id;
   }
 }
