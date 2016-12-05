@@ -12,9 +12,15 @@ package com.github.sdorra.ssp;
 @StaticPermissions("repositories")
 public class Repository implements PermissionObject {
 
+  private final String id;
+
+  public Repository(String id) {
+    this.id = id;
+  }
+
   @Override
   public String getId() {
-    return "1";
+    return id;
   }
 
 }
