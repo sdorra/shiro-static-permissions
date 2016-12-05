@@ -21,8 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-
 package com.github.sdorra.ssp;
 
 import java.util.List;
@@ -31,15 +29,24 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
 /**
+ * Util methods for handling {@link TypeElement}.
  *
  * @author Sebastian Sdorra
  */
-public class TypeElements {
+final class TypeElements {
 
   private TypeElements() {
   }
 
-  public static boolean isAssignableFrom(final Class<?> type, final TypeElement typeElement) {
+  /**
+   * Returns {@code true} if {@link TypeElement} is assignable from type.
+   *
+   * @param type type
+   * @param typeElement type element
+   *
+   * @return {@code true} if {@link TypeElement} is assignable from type
+   */
+  static boolean isAssignableFrom(final Class<?> type, final TypeElement typeElement) {
     if (type.getName().equals(typeElement.getQualifiedName().toString())) {
       return true;
     }

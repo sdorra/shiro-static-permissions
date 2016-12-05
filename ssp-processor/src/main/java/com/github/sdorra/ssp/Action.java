@@ -26,24 +26,41 @@
 package com.github.sdorra.ssp;
 
 /**
- *
+ * Action represents a permission action.
+ * 
  * @author Sebastian Sdorra
  */
-public class Action {
+final class Action {
   
   private final String name;
   private final String constant;
 
-  public Action(String name, String constant) {
+  /**
+   * Constructs a new instance.
+   * 
+   * @param name action name
+   * @param constant action constant
+   */
+  Action(String name, String constant) {
     this.name = name;
     this.constant = constant;
   }
 
-  public String getConstant() {
+  /**
+   * Returns action constant.
+   * 
+   * @return action constant
+   */
+  String getConstant() {
     return constant;
   }
 
-  public String getName() {
+  /**
+   * Returns name of action.
+   * 
+   * @return action name
+   */
+  String getName() {
     return name;
   }
   

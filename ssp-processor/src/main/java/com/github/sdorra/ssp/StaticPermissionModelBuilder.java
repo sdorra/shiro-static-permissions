@@ -21,8 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-
 package com.github.sdorra.ssp;
 
 import java.util.ArrayList;
@@ -33,57 +31,70 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 
 /**
+ * Generates {@link StaticPermissionModel} from {@link TypeElement}.
  *
  * @author Sebastian Sdorra
  */
-public class StaticPermissionModelBuilder {
-  
+final class StaticPermissionModelBuilder {
+
   private final ProcessingEnvironment processingEnv;
 
-  public StaticPermissionModelBuilder(ProcessingEnvironment processingEnv) {
+  /**
+   * Constructs a new instance.
+   *
+   * @param processingEnv procession environment
+   */
+  StaticPermissionModelBuilder(ProcessingEnvironment processingEnv) {
     this.processingEnv = processingEnv;
   }
-  
-  public StaticPermissionModel process(TypeElement classElement){
-    if (!TypeElements.isAssignableFrom(PermissionObject.class, classElement)){
+
+  /**
+   * Processes the type element and generates the model.
+   *
+   * @param classElement class element
+   *
+   * @return model for template input
+   */
+  StaticPermissionModel process(TypeElement classElement) {
+    if (!TypeElements.isAssignableFrom(PermissionObject.class, classElement)) {
       throw new RuntimeException(
         "static permissions can only be generated if the target class implements the PermissionObject interface"
       );
     }
-    
+
     StaticPermissions staticPermissions = classElement.getAnnotation(StaticPermissions.class);
     if (staticPermissions == null) {
       throw new RuntimeException("type element is not annotated with StaticPermissions annotation");
     }
-    
+
     String className = classElement.getSimpleName().toString();
     String packageName = getPackageName(classElement);
-    
+
     String generatedClass = staticPermissions.generatedClass();
-    if (generatedClass.isEmpty()){
+    if (generatedClass.isEmpty()) {
       generatedClass = className.concat("Permissions");
     }
-    
+
     return new StaticPermissionModel(
-      packageName, 
-      generatedClass, 
+      packageName,
+      generatedClass,
       staticPermissions.value(),
-      className, 
-      convert(staticPermissions.permissions()), 
+      className,
+      convert(staticPermissions.permissions()),
       convert(staticPermissions.globalPermissions())
     );
   }
-  
-  private Iterable<Action> convert(String[] permissions){
+
+  private Iterable<Action> convert(String[] permissions) {
     List<Action> actions = new ArrayList<>();
-    for (String permission : permissions){
+    for (String permission : permissions) {
       actions.add(new Action(permission, permission.toUpperCase(Locale.ENGLISH)));
     }
     return actions;
   }
-  
+
   private String getPackageName(TypeElement classElement) {
     return ((PackageElement) classElement.getEnclosingElement()).getQualifiedName().toString();
   }
-  
+
 }

@@ -21,8 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-
 package com.github.sdorra.ssp;
 
 import com.github.mustachejava.DefaultMustacheFactory;
@@ -46,34 +44,38 @@ import javax.tools.JavaFileObject;
 import org.kohsuke.MetaInfServices;
 
 /**
- *
+ * Processes each type which is annotated with {@link StaticPermissions} and generates a
+ * class for permission checks. The processor uses {@link StaticPermissionModelBuilder} to
+ * generate a model and writes it to the disk with the mustache template engine.
+ * 
  * @author Sebastian Sdorra
  */
 @SupportedAnnotationTypes("*")
 @MetaInfServices(Processor.class)
-@SuppressWarnings({ "Since16", "Since15" })
+@SuppressWarnings({"Since16", "Since15"})
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 public class StaticPermissionProcessor extends AbstractProcessor {
 
   private static final String TEMPLATE = "com/github/sdorra/ssp/template.mustache";
-  
+
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
     StaticPermissionModelBuilder builder = new StaticPermissionModelBuilder(processingEnv);
-    for (Element e : roundEnv.getElementsAnnotatedWith(StaticPermissions.class)){
+    for (Element e : roundEnv.getElementsAnnotatedWith(StaticPermissions.class)) {
       if (e.getKind() == ElementKind.CLASS) {
         handle(builder, (TypeElement) e);
       }
     }
     return true;
   }
-  
+
   private void handle(StaticPermissionModelBuilder builder, TypeElement typeElement) {
     try {
       StaticPermissionModel model = builder.process(typeElement);
 
       write(model);
-    } catch (IOException ex) {
+    }
+    catch (IOException ex) {
       throw Throwables.propagate(ex);
     }
   }
@@ -90,5 +92,5 @@ public class StaticPermissionProcessor extends AbstractProcessor {
       mustache.execute(writer, model).flush();
     }
   }
-  
+
 }
