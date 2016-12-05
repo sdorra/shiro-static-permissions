@@ -26,7 +26,7 @@
 package com.github.sdorra.ssp;
 
 import com.google.common.base.Strings;
-import java.util.Objects;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.subject.Subject;
@@ -97,6 +97,6 @@ public final class PermissionActionCheck<T extends PermissionObject> {
    * @return {@code true} if the current authenticated user has the required permission
    */
   public boolean isPermitted(T item) {
-    return isPermitted(Objects.toString(item));
+    return isPermitted(item.getId());
   }
 }
