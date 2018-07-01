@@ -23,12 +23,11 @@
  */
 package com.github.sdorra.ssp;
 
+import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.PackageElement;
-import javax.lang.model.element.TypeElement;
 
 /**
  * Generates {@link StaticPermissionModel} from {@link TypeElement}.
