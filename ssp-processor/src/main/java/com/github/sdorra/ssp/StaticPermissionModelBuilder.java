@@ -37,17 +37,6 @@ import javax.lang.model.element.TypeElement;
  */
 final class StaticPermissionModelBuilder {
 
-  private final ProcessingEnvironment processingEnv;
-
-  /**
-   * Constructs a new instance.
-   *
-   * @param processingEnv procession environment
-   */
-  StaticPermissionModelBuilder(ProcessingEnvironment processingEnv) {
-    this.processingEnv = processingEnv;
-  }
-
   /**
    * Processes the type element and generates the model.
    *
@@ -57,14 +46,14 @@ final class StaticPermissionModelBuilder {
    */
   StaticPermissionModel process(TypeElement classElement) {
     if (!TypeElements.isAssignableFrom(PermissionObject.class, classElement)) {
-      throw new RuntimeException(
+      throw new IllegalStateException(
         "static permissions can only be generated if the target class implements the PermissionObject interface"
       );
     }
 
     StaticPermissions staticPermissions = classElement.getAnnotation(StaticPermissions.class);
     if (staticPermissions == null) {
-      throw new RuntimeException("type element is not annotated with StaticPermissions annotation");
+      throw new IllegalStateException("type element is not annotated with StaticPermissions annotation");
     }
 
     String className = classElement.getSimpleName().toString();

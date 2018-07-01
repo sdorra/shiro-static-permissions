@@ -47,7 +47,7 @@ import org.kohsuke.MetaInfServices;
  * Processes each type which is annotated with {@link StaticPermissions} and generates a
  * class for permission checks. The processor uses {@link StaticPermissionModelBuilder} to
  * generate a model and writes it to the disk with the mustache template engine.
- * 
+ *
  * @author Sebastian Sdorra
  */
 @SupportedAnnotationTypes("*")
@@ -60,7 +60,7 @@ public class StaticPermissionProcessor extends AbstractProcessor {
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-    StaticPermissionModelBuilder builder = new StaticPermissionModelBuilder(processingEnv);
+    StaticPermissionModelBuilder builder = new StaticPermissionModelBuilder();
     for (Element e : roundEnv.getElementsAnnotatedWith(StaticPermissions.class)) {
       if (e.getKind() == ElementKind.CLASS) {
         handle(builder, (TypeElement) e);

@@ -39,7 +39,7 @@ public final class PermissionActionCheck<T extends PermissionObject> {
 
   private final String prefix;
   private final Subject subject;
-  
+
   /**
    * Constructs a new instance.
    *
@@ -56,10 +56,10 @@ public final class PermissionActionCheck<T extends PermissionObject> {
    * Checks if the current authenticated user has the permission for the action with the given object id.
    *
    * @param id id of permission object
-   * 
+   *
    * @throws AuthorizationException if current user lacks the required permission
    */
-  public void check(String id) throws AuthorizationException {
+  public void check(String id) {
     subject.checkPermission(prefix.concat(nullToEmpty(id)));
   }
 
@@ -67,10 +67,10 @@ public final class PermissionActionCheck<T extends PermissionObject> {
    * Checks if the current authenticated user has the permission for the action with the given object.
    *
    * @param item permission object
-   * 
+   *
    * @throws AuthorizationException if current user lacks the required permission
    */
-  public void check(T item) throws AuthorizationException {
+  public void check(T item) {
     check(item.getId());
   }
 
@@ -97,7 +97,7 @@ public final class PermissionActionCheck<T extends PermissionObject> {
   public boolean isPermitted(T item) {
     return isPermitted(item.getId());
   }
-  
+
   private String nullToEmpty(String id){
     return id == null ? "" : id;
   }
