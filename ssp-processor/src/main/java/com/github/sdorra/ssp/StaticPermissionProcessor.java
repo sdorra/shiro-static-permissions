@@ -26,22 +26,17 @@ package com.github.sdorra.ssp;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
-import com.google.common.base.Throwables;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Set;
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.Processor;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
+import org.kohsuke.MetaInfServices;
+
+import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.tools.JavaFileObject;
-import org.kohsuke.MetaInfServices;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Set;
 
 /**
  * Processes each type which is annotated with {@link StaticPermissions} and generates a
@@ -76,7 +71,7 @@ public class StaticPermissionProcessor extends AbstractProcessor {
       write(model);
     }
     catch (IOException ex) {
-      throw Throwables.propagate(ex);
+      throw new IllegalStateException("failed to create model", ex);
     }
   }
 

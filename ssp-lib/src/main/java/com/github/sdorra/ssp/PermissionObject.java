@@ -31,12 +31,12 @@ package com.github.sdorra.ssp;
  * @author Sebastian Sdorra
  */
 public interface PermissionObject {
-  
+
   /**
    * Returns the id of the permission object.
-   * 
+   *
    * @return id of permission object
    */
-  public String getId();
-  
+  String getId();
+
 }
