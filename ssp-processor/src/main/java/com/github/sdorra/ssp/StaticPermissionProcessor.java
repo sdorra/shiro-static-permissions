@@ -57,7 +57,7 @@ public class StaticPermissionProcessor extends AbstractProcessor {
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
     StaticPermissionModelBuilder builder = new StaticPermissionModelBuilder();
     for (Element e : roundEnv.getElementsAnnotatedWith(StaticPermissions.class)) {
-      if (e.getKind() == ElementKind.CLASS) {
+      if (e.getKind() == ElementKind.CLASS || e.getKind() == ElementKind.INTERFACE) {
         handle(builder, (TypeElement) e);
       }
     }
