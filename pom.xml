@@ -5,6 +5,7 @@
   <artifactId>ssp</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
+  <name>shiro-static-permissions</name>
   <description>AnnotationProcessor which generates static shiro permission check objects.</description>
   <url>https://github.com/sdorra/shiro-static-permissions</url>
 
@@ -59,28 +60,6 @@
 
   <build>
     <plugins>
-
-      <!-- animal sniffer failed with libraries from annotation processor tests -->
-      <!--plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>animal-sniffer-maven-plugin</artifactId>
-        <version>1.9</version>
-        <configuration>
-          <signature>
-            <groupId>org.codehaus.mojo.signature</groupId>
-            <artifactId>java18</artifactId>
-            <version>1.0</version>
-          </signature>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>compile</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin-->
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

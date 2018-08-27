@@ -12,6 +12,7 @@
 
   <artifactId>ssp-example</artifactId>
   <packaging>jar</packaging>
+  <name>shiro-static-permissions example</name>
 
   <dependencies>
 
