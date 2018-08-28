@@ -53,9 +53,20 @@ public class StaticPermissionProcessor extends AbstractProcessor {
 
   private static final String TEMPLATE = "com/github/sdorra/ssp/template.mustache";
 
+  private StaticPermissionModelBuilder builder;
+  private MustacheFactory mustacheFactory;
+
+  public StaticPermissionProcessor() {
+    this(new StaticPermissionModelBuilder(), new DefaultMustacheFactory());
+  }
+
+  StaticPermissionProcessor(StaticPermissionModelBuilder builder, MustacheFactory mustacheFactory) {
+    this.builder = builder;
+    this.mustacheFactory = mustacheFactory;
+  }
+
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-    StaticPermissionModelBuilder builder = new StaticPermissionModelBuilder();
     for (Element e : roundEnv.getElementsAnnotatedWith(StaticPermissions.class)) {
       if (e.getKind() == ElementKind.CLASS || e.getKind() == ElementKind.INTERFACE) {
         handle(builder, (TypeElement) e);
@@ -79,9 +90,7 @@ public class StaticPermissionProcessor extends AbstractProcessor {
     Filer filer = processingEnv.getFiler();
 
     JavaFileObject jfo = filer.createSourceFile(model.getFullClassName());
-
-    MustacheFactory mf = new DefaultMustacheFactory();
-    Mustache mustache = mf.compile(TEMPLATE);
+    Mustache mustache = mustacheFactory.compile(TEMPLATE);
 
     try (Writer writer = jfo.openWriter()) {
       mustache.execute(writer, model).flush();
