@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.sdorra</groupId>
   <artifactId>ssp</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>shiro-static-permissions</name>
   <description>AnnotationProcessor which generates static shiro permission check objects.</description>
@@ -30,7 +30,7 @@
     <connection>scm:git:git@github.com:sdorra/shiro-static-permissions</connection>
     <developerConnection>scm:git:git@github.com:sdorra/shiro-static-permissions.git</developerConnection>
     <url>git@github.com:sdorra/shiro-static-permissions</url>
-    <tag>1.1.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <issueManagement>
