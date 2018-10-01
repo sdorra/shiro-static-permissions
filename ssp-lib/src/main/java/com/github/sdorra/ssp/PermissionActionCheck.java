@@ -60,7 +60,7 @@ public final class PermissionActionCheck<T extends PermissionObject> {
    * @throws AuthorizationException if current user lacks the required permission
    */
   public void check(String id) throws AuthorizationException {
-    subject.checkPermission(prefix.concat(nullToEmpty(id)));
+    subject.checkPermission(asShiroString(id));
   }
 
   /**
@@ -84,7 +84,7 @@ public final class PermissionActionCheck<T extends PermissionObject> {
    * @return {@code true} if the current authenticated user has the required permission
    */
   public boolean isPermitted(String id) {
-    return subject.isPermitted(prefix.concat(id));
+    return subject.isPermitted(asShiroString(id));
   }
 
   /**
@@ -96,6 +96,29 @@ public final class PermissionActionCheck<T extends PermissionObject> {
    */
   public boolean isPermitted(T item) {
     return isPermitted(item.getId());
+  }
+
+
+  /**
+   * Returns the shiro permission string for the given item.
+   *
+   * @param item permission object
+   *
+   * @return shiro permission string
+   */
+  public String asShiroString(T item) {
+    return asShiroString(item.getId());
+  }
+
+  /**
+   * Returns the shiro permission string for the given id.
+   *
+   * @param id id of permission object
+   *
+   * @return shiro permission string
+   */
+  public String asShiroString(String id) {
+    return prefix.concat(nullToEmpty(id));
   }
   
   private String nullToEmpty(String id){

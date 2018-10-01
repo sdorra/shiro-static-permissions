@@ -86,6 +86,24 @@ public class PermissionActionCheckTest {
     delete.check(new Repository("abc"));
   }
 
+  /**
+   * Tests {@link PermissionActionCheck#asShiroString(String)}.
+   */
+  @Test
+  public void testAsShiroStringId() {
+    PermissionActionCheck<Repository> delete = new PermissionActionCheck<>("repository:delete");
+    assertEquals("repository:delete:abc", delete.asShiroString("abc"));
+  }
+
+  /**
+   * Tests {@link PermissionActionCheck#asShiroString(PermissionObject)}.
+   */
+  @Test
+  public void testAsShiroStringItem() {
+    PermissionActionCheck<Repository> delete = new PermissionActionCheck<>("repository:delete");
+    assertEquals("repository:delete:abc", delete.asShiroString(new Repository("abc")));
+  }
+
   private static class Repository implements PermissionObject {
 
     private final String id;
