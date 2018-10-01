@@ -68,4 +68,18 @@ public final class PermissionCheck {
   public boolean isPermitted() {
     return SecurityUtils.getSubject().isPermitted(permission);
   }
+
+  /**
+   * Returns the permission as apache shiro string.
+   *
+   * @return shiro permission string
+   */
+  public String asShiroString() {
+    return permission;
+  }
+
+  @Override
+  public String toString() {
+    return permission;
+  }
 }

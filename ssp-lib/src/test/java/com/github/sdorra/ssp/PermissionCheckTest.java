@@ -73,4 +73,19 @@ public class PermissionCheckTest {
     assertFalse(new PermissionCheck("other:delete").isPermitted());
   }
 
+  /**
+   * Tests {@link PermissionCheck#asShiroString()}
+   */
+  @Test
+  public void testAsShiroString() {
+    assertEquals("something:create", new PermissionCheck("something:create").asShiroString());
+  }
+
+  /**
+   * Tests {@link PermissionCheck#toString()}
+   */
+  @Test
+  public void testToString() {
+    assertEquals("something:create", new PermissionCheck("something:create").toString());
+  }
 }
