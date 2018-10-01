@@ -26,28 +26,23 @@ package com.github.sdorra.ssp;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
-import com.google.common.base.Throwables;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Set;
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.Processor;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
+import org.kohsuke.MetaInfServices;
+
+import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.tools.JavaFileObject;
-import org.kohsuke.MetaInfServices;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Set;
 
 /**
  * Processes each type which is annotated with {@link StaticPermissions} and generates a
  * class for permission checks. The processor uses {@link StaticPermissionModelBuilder} to
  * generate a model and writes it to the disk with the mustache template engine.
- * 
+ *
  * @author Sebastian Sdorra
  */
 @SupportedAnnotationTypes("*")
@@ -58,11 +53,22 @@ public class StaticPermissionProcessor extends AbstractProcessor {
 
   private static final String TEMPLATE = "com/github/sdorra/ssp/template.mustache";
 
+  private StaticPermissionModelBuilder builder;
+  private MustacheFactory mustacheFactory;
+
+  public StaticPermissionProcessor() {
+    this(new StaticPermissionModelBuilder(), new DefaultMustacheFactory());
+  }
+
+  StaticPermissionProcessor(StaticPermissionModelBuilder builder, MustacheFactory mustacheFactory) {
+    this.builder = builder;
+    this.mustacheFactory = mustacheFactory;
+  }
+
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-    StaticPermissionModelBuilder builder = new StaticPermissionModelBuilder(processingEnv);
     for (Element e : roundEnv.getElementsAnnotatedWith(StaticPermissions.class)) {
-      if (e.getKind() == ElementKind.CLASS) {
+      if (e.getKind() == ElementKind.CLASS || e.getKind() == ElementKind.INTERFACE) {
         handle(builder, (TypeElement) e);
       }
     }
@@ -76,7 +82,7 @@ public class StaticPermissionProcessor extends AbstractProcessor {
       write(model);
     }
     catch (IOException ex) {
-      throw Throwables.propagate(ex);
+      throw new IllegalStateException("failed to create model", ex);
     }
   }
 
@@ -84,9 +90,7 @@ public class StaticPermissionProcessor extends AbstractProcessor {
     Filer filer = processingEnv.getFiler();
 
     JavaFileObject jfo = filer.createSourceFile(model.getFullClassName());
-
-    MustacheFactory mf = new DefaultMustacheFactory();
-    Mustache mustache = mf.compile(TEMPLATE);
+    Mustache mustache = mustacheFactory.compile(TEMPLATE);
 
     try (Writer writer = jfo.openWriter()) {
       mustache.execute(writer, model).flush();

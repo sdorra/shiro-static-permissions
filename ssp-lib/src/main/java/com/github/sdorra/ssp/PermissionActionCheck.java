@@ -39,7 +39,7 @@ public final class PermissionActionCheck<T extends PermissionObject> {
 
   private final String prefix;
   private final Subject subject;
-  
+
   /**
    * Constructs a new instance.
    *
@@ -56,7 +56,7 @@ public final class PermissionActionCheck<T extends PermissionObject> {
    * Checks if the current authenticated user has the permission for the action with the given object id.
    *
    * @param id id of permission object
-   * 
+   *
    * @throws AuthorizationException if current user lacks the required permission
    */
   public void check(String id) throws AuthorizationException {
@@ -67,10 +67,10 @@ public final class PermissionActionCheck<T extends PermissionObject> {
    * Checks if the current authenticated user has the permission for the action with the given object.
    *
    * @param item permission object
-   * 
+   *
    * @throws AuthorizationException if current user lacks the required permission
    */
-  public void check(T item) throws AuthorizationException {
+  public void check(T item) {
     check(item.getId());
   }
 
@@ -98,7 +98,6 @@ public final class PermissionActionCheck<T extends PermissionObject> {
     return isPermitted(item.getId());
   }
 
-
   /**
    * Returns the shiro permission string for the given item.
    *
@@ -120,7 +119,7 @@ public final class PermissionActionCheck<T extends PermissionObject> {
   public String asShiroString(String id) {
     return prefix.concat(nullToEmpty(id));
   }
-  
+
   private String nullToEmpty(String id){
     return id == null ? "" : id;
   }

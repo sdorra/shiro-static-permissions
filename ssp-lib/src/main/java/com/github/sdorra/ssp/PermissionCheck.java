@@ -30,13 +30,13 @@ import org.apache.shiro.authz.AuthorizationException;
 
 /**
  * Checks a defined shiro permission.
- * 
+ *
  * @author Sebastian Sdorra
  */
 public final class PermissionCheck {
-  
+
   private final String permission;
-  
+
   /**
    * Constructs a new instance.
    *
@@ -51,10 +51,10 @@ public final class PermissionCheck {
 
   /**
    * Checks if the current authenticated user has the required permission.
-   * 
+   *
    * @throws AuthorizationException if current user lacks the required permission
    */
-  public void check() throws AuthorizationException {
+  public void check() {
     SecurityUtils.getSubject().checkPermission(permission);
   }
 
@@ -82,4 +82,5 @@ public final class PermissionCheck {
   public String toString() {
     return permission;
   }
+
 }

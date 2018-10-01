@@ -25,18 +25,38 @@
 
 package com.github.sdorra.ssp;
 
-/**
- * Permission object.
- *
- * @author Sebastian Sdorra
- */
-public interface PermissionObject {
+import com.github.sdorra.shiro.ShiroRule;
+import com.github.sdorra.shiro.SubjectAware;
+import org.apache.shiro.authz.UnauthorizedException;
+import org.junit.Rule;
+import org.junit.Test;
 
-  /**
-   * Returns the id of the permission object.
-   *
-   * @return id of permission object
-   */
-  String getId();
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+@SubjectAware(
+    username = "trillian",
+    password = "secret",
+    configuration = "classpath:com/github/sdorra/ssp/shiro.ini"
+)
+public class RepositoryPermissionsTest {
+
+    @Rule
+    public ShiroRule rule = new ShiroRule();
+
+    @Test
+    public void testIsPermitted() {
+        assertFalse(RepositoryPermissions.read("123").isPermitted());
+        assertFalse(RepositoryPermissions.modify("123").isPermitted());
+        assertFalse(RepositoryPermissions.delete("123").isPermitted());
+
+        assertTrue(RepositoryPermissions.delete(new Repository("1234")).isPermitted());
+        assertTrue(RepositoryPermissions.delete("1234").isPermitted());
+        assertTrue(RepositoryPermissions.create().isPermitted());
+    }
+
+    @Test(expected = UnauthorizedException.class)
+    public void testCheck() {
+        RepositoryPermissions.read("123").check();
+    }
 }

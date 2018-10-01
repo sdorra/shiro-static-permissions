@@ -68,4 +68,8 @@ hs_err_pid*
 
 # custom
 *.iml
+<<<<<<< HEAD
 .idea/
+=======
+.idea/
+>>>>>>> ea24714966f3d45e943b5fee1cf2c1209e5589bb
