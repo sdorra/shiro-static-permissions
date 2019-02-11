@@ -69,4 +69,18 @@ public @interface StaticPermissions {
    * @return global permissions
    */
   String[] globalPermissions() default {"create"};
+
+  /**
+   * Allow custom permission checks, by adding methods named custom to the generated class.
+   *
+   * @return custom permission
+   */
+  boolean custom() default false;
+
+  /**
+   * Allow custom global permission checks, by adding a method named custom to the generated class.
+   *
+   * @return custom permission
+   */
+  boolean customGlobal() default false;
 }

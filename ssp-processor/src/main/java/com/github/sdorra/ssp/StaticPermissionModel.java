@@ -36,6 +36,8 @@ public class StaticPermissionModel {
   private final String permissionObject;
   private final Iterable<Action> permissions;
   private final Iterable<Action> globalPermissions;
+  private final boolean custom;
+  private final boolean customGlobal;
 
   /**
    * Constructs a new instance.
@@ -46,15 +48,19 @@ public class StaticPermissionModel {
    * @param permissionObject class of permission object
    * @param permissions list of item specific permissions
    * @param globalPermissions list of global permissions
+   * @param custom custom permissions
+   * @param customGlobal custom global permissions
    */
   StaticPermissionModel(String packageName, String className, String type, String permissionObject,
-    Iterable<Action> permissions, Iterable<Action> globalPermissions) {
+    Iterable<Action> permissions, Iterable<Action> globalPermissions, boolean custom, boolean customGlobal) {
     this.packageName = packageName;
     this.className = className;
     this.type = type;
     this.permissionObject = permissionObject;
     this.permissions = permissions;
     this.globalPermissions = globalPermissions;
+    this.custom = custom;
+    this.customGlobal = customGlobal;
   }
 
   /**
@@ -120,4 +126,21 @@ public class StaticPermissionModel {
     return globalPermissions;
   }
 
+  /**
+   * Return {@code true} if custom permissions are allowed.
+   *
+   * @return {@code true} if custom permissions are allowed.
+   */
+  public boolean isCustom() {
+    return custom;
+  }
+
+  /**
+   * Return {@code true} if global custom permissions are allowed.
+   *
+   * @return {@code true} if global custom permissions are allowed.
+   */
+  public boolean isCustomGlobal() {
+    return customGlobal;
+  }
 }

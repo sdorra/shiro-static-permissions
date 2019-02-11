@@ -69,7 +69,9 @@ final class StaticPermissionModelBuilder {
       staticPermissions.value(),
       className,
       convert(staticPermissions.permissions()),
-      convert(staticPermissions.globalPermissions())
+      convert(staticPermissions.globalPermissions()),
+      staticPermissions.custom(),
+      staticPermissions.customGlobal()
     );
   }
 

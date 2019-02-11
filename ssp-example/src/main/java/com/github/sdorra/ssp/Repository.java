@@ -9,7 +9,7 @@ package com.github.sdorra.ssp;
  *
  * @author Sebastian Sdorra
  */
-@StaticPermissions("repositories")
+@StaticPermissions(value = "repositories", custom = true, customGlobal = true)
 public class Repository implements PermissionObject {
 
   private final String id;

@@ -76,6 +76,116 @@ public class StaticPermissionProcessorTest {
             )
     );
 
+    final JavaFileObject interfaceInputWithCustomGlobal = JavaFileObjects.forSourceString(
+            "com.example.A",
+            Joiner.on(System.lineSeparator()).join(
+                    "package com.example;",
+                    "",
+                    "import com.github.sdorra.ssp.StaticPermissions;",
+                    "import com.github.sdorra.ssp.PermissionObject;",
+                    "",
+                    "@StaticPermissions(value = \"a\", permissions = {}, customGlobal = true)",
+                    "interface A extends PermissionObject {",
+                    "}"
+            )
+    );
+
+    final JavaFileObject expectedOutputWithCustomGlobal = JavaFileObjects.forSourceString(
+            "com.example.APermissions",
+            Joiner.on(System.lineSeparator()).join(
+                    "package com.example;",
+                    "",
+                    "import com.github.sdorra.ssp.Constants;",
+                    "import com.github.sdorra.ssp.PermissionCheck;",
+                    "import com.github.sdorra.ssp.PermissionActionCheck;",
+                    "",
+                    "public final class APermissions {",
+                    "",
+                    "  private static final String TYPE = \"a\";",
+                    "",
+                    "  public static final String ACTION_CREATE = \"create\";",
+                    "",
+                    "  private APermissions(){}",
+                    "",
+                    "  public static PermissionCheck create() {",
+                    "    return check(ACTION_CREATE);",
+                    "  }",
+                    "",
+                    "  public static PermissionCheck custom(String customAction) {",
+                    "    return check(customAction);",
+                    "  }",
+                    "",
+                    "",
+                    "  private static PermissionActionCheck<A> actionCheck(String action) {",
+                    "    return new PermissionActionCheck<>(TYPE.concat(Constants.SEPARATOR).concat(action));",
+                    "  }",
+                    "",
+                    "  private static PermissionCheck check(String permission) {",
+                    "    return new PermissionCheck(TYPE.concat(Constants.SEPARATOR).concat(permission));",
+                    "  }",
+                    "}"
+            )
+    );
+
+    final JavaFileObject interfaceInputWithCustom = JavaFileObjects.forSourceString(
+            "com.example.A",
+            Joiner.on(System.lineSeparator()).join(
+                    "package com.example;",
+                    "",
+                    "import com.github.sdorra.ssp.StaticPermissions;",
+                    "import com.github.sdorra.ssp.PermissionObject;",
+                    "",
+                    "@StaticPermissions(value = \"a\", permissions = {}, custom = true)",
+                    "interface A extends PermissionObject {",
+                    "}"
+            )
+    );
+
+    final JavaFileObject expectedOutputWithCustom = JavaFileObjects.forSourceString(
+            "com.example.APermissions",
+            Joiner.on(System.lineSeparator()).join(
+                    "package com.example;",
+                    "",
+                    "import com.github.sdorra.ssp.Constants;",
+                    "import com.github.sdorra.ssp.PermissionCheck;",
+                    "import com.github.sdorra.ssp.PermissionActionCheck;",
+                    "",
+                    "public final class APermissions {",
+                    "",
+                    "  private static final String TYPE = \"a\";",
+                    "",
+                    "  public static final String ACTION_CREATE = \"create\";",
+                    "",
+                    "  private APermissions(){}",
+                    "",
+                    "  public static PermissionCheck create() {",
+                    "    return check(ACTION_CREATE);",
+                    "  }",
+                    "",
+                    "  public static PermissionCheck custom(String customAction, String id) {",
+                    "    return check(customAction.concat(Constants.SEPARATOR).concat(id));",
+                    "  }",
+                    "",
+                    "  public static PermissionCheck custom(String customAction, A item) {",
+                    "    return check(customAction.concat(Constants.SEPARATOR).concat(item.getId()));",
+                    "  }",
+                    "",
+                    "  public static PermissionActionCheck<A> customActionCheck(String customAction) {",
+                    "    return actionCheck(customAction);",
+                    "  }",
+                    "",
+                    "",
+                    "  private static PermissionActionCheck<A> actionCheck(String action) {",
+                    "    return new PermissionActionCheck<>(TYPE.concat(Constants.SEPARATOR).concat(action));",
+                    "  }",
+                    "",
+                    "  private static PermissionCheck check(String permission) {",
+                    "    return new PermissionCheck(TYPE.concat(Constants.SEPARATOR).concat(permission));",
+                    "  }",
+                    "}"
+            )
+    );
+
     @Test
     public void processClass() {
         processAndAssert(clazzInput, expectedOutput);
@@ -98,6 +208,16 @@ public class StaticPermissionProcessorTest {
         );
 
         processAndAssert(interfaze, expectedOutput);
+    }
+
+    @Test
+    public void shouldGenerateWithCustom() {
+        processAndAssert(interfaceInputWithCustom, expectedOutputWithCustom);
+    }
+
+    @Test
+    public void shouldGenerateWithCustomGlobal() {
+        processAndAssert(interfaceInputWithCustomGlobal, expectedOutputWithCustomGlobal);
     }
 
     private void processAndAssert(JavaFileObject input, JavaFileObject output) {

@@ -55,6 +55,20 @@ public class RepositoryPermissionsTest {
         assertTrue(RepositoryPermissions.create().isPermitted());
     }
 
+    @Test
+    public void testCustomGlobal() {
+        assertFalse(RepositoryPermissions.custom("special").isPermitted());
+
+        assertTrue(RepositoryPermissions.custom("fork").isPermitted());
+    }
+
+    @Test
+    public void testCustom() {
+        assertFalse(RepositoryPermissions.custom("merge", "1235").isPermitted());
+
+        assertTrue(RepositoryPermissions.custom("merge", "1234").isPermitted());
+    }
+
     @Test(expected = UnauthorizedException.class)
     public void testCheck() {
         RepositoryPermissions.read("123").check();

@@ -98,7 +98,55 @@ public final class {{className}} {
   public static PermissionActionCheck<{{permissionObject}}> {{name}}() {
     return actionCheck(ACTION_{{constant}});
   }
-  {{/permissions}} 
+  {{/permissions}}
+
+  {{#customGlobal}}
+  /**
+   * Returns permission check for a custom global action.
+   *
+   * @return permission check for the given custom global action
+   */
+   public static PermissionCheck custom(String customAction) {
+     return check(customAction);
+   }
+  {{/customGlobal}}
+
+  {{#custom}}
+  /**
+   * Returns permission check for custom action.
+   *
+   * @param customAction name of custom action
+   * @param id id of permission object
+   *
+   * @return permission check for a custom action
+   */
+   public static PermissionCheck custom(String customAction, String id) {
+     return check(customAction.concat(Constants.SEPARATOR).concat(id));
+   }
+
+  /**
+   * Returns permission check for custom action.
+   *
+   * @param customAction name of custom action
+   * @param item permission object
+   *
+   * @return permission check for custom action
+   */
+   public static PermissionCheck custom(String customAction, {{permissionObject}} item) {
+     return check(customAction.concat(Constants.SEPARATOR).concat(item.getId()));
+   }
+
+  /**
+   * Returns permission action check for custom action.
+   *
+   * @param customAction name of custom action
+   *
+   * @return permission action check for custom action
+   */
+   public static PermissionActionCheck<{{permissionObject}}> customActionCheck(String customAction) {
+     return actionCheck(customAction);
+   }
+  {{/custom}}
   
   // private methods
   
