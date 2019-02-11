@@ -59,7 +59,7 @@ public final class PermissionActionCheck<T extends PermissionObject> {
    *
    * @throws AuthorizationException if current user lacks the required permission
    */
-  public void check(String id) throws AuthorizationException {
+  public void check(String id) {
     subject.checkPermission(asShiroString(id));
   }
 
