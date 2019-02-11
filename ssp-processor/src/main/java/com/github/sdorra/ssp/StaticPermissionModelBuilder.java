@@ -64,14 +64,12 @@ final class StaticPermissionModelBuilder {
     }
 
     return new StaticPermissionModel(
+      staticPermissions,
       packageName,
       generatedClass,
-      staticPermissions.value(),
       className,
       convert(staticPermissions.permissions()),
-      convert(staticPermissions.globalPermissions()),
-      staticPermissions.custom(),
-      staticPermissions.customGlobal()
+      convert(staticPermissions.globalPermissions())
     );
   }
 

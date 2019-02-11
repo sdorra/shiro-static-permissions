@@ -42,25 +42,23 @@ public class StaticPermissionModel {
   /**
    * Constructs a new instance.
    *
+   * @param annotation found {@code StaticPermissions} annotation
    * @param packageName package name for generated class
    * @param className simple name of generated class
-   * @param type permission type
    * @param permissionObject class of permission object
    * @param permissions list of item specific permissions
    * @param globalPermissions list of global permissions
-   * @param custom custom permissions
-   * @param customGlobal custom global permissions
    */
-  StaticPermissionModel(String packageName, String className, String type, String permissionObject,
-    Iterable<Action> permissions, Iterable<Action> globalPermissions, boolean custom, boolean customGlobal) {
+  StaticPermissionModel(StaticPermissions annotation, String packageName, String className, String permissionObject,
+    Iterable<Action> permissions, Iterable<Action> globalPermissions) {
     this.packageName = packageName;
     this.className = className;
-    this.type = type;
+    this.type = annotation.value();
     this.permissionObject = permissionObject;
     this.permissions = permissions;
     this.globalPermissions = globalPermissions;
-    this.custom = custom;
-    this.customGlobal = customGlobal;
+    this.custom = annotation.custom();
+    this.customGlobal = annotation.customGlobal();
   }
 
   /**
