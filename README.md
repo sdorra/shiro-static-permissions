@@ -24,7 +24,7 @@ if (RepositoryPermissions.delete("123").isPermitted()) {
 }
 
 // throw exception if the user lacks delete permission for repository 123
-RepositoryPermissions.delete(new Repository("123"));
+RepositoryPermissions.delete(new Repository("123")).check();
 ```
 
 ## Usage
