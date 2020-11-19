@@ -21,10 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
- 
+
 package {{packageName}};
 
 import com.github.sdorra.ssp.Constants;
+import com.github.sdorra.ssp.DefaultPermissionCheck;
+import com.github.sdorra.ssp.DefaultPermissionActionCheck;
 import com.github.sdorra.ssp.PermissionCheck;
 import com.github.sdorra.ssp.PermissionActionCheck;
 
@@ -38,23 +40,23 @@ public final class {{className}} {
   /** permission type */
   private static final String TYPE = "{{type}}";
   {{#globalPermissions}}
-  
+
   /** {{name}} permission */
   public static final String ACTION_{{constant}} = "{{name}}";
-  {{/globalPermissions}}  
+  {{/globalPermissions}}
   {{#permissions}}
-  
+
   /** {{name}} permission */
   public static final String ACTION_{{constant}} = "{{name}}";
   {{/permissions}}
-  
+
   // constructor
-  
+
   private {{className}}(){}
 
   // public global permissions methods
   {{#globalPermissions}}
-  
+
   /**
    * Returns permission check for {{name}} action.
    *
@@ -64,10 +66,10 @@ public final class {{className}} {
     return check(ACTION_{{constant}});
   }
   {{/globalPermissions}}
-  
+
   // public permission methods
   {{#permissions}}
-  
+
   /**
    * Returns permission check for {{name}} action.
    *
@@ -78,7 +80,7 @@ public final class {{className}} {
   public static PermissionCheck {{name}}(String id) {
     return check(ACTION_{{constant}}.concat(Constants.SEPARATOR).concat(id));
   }
-  
+
   /**
    * Returns permission check for {{name}} action.
    *
@@ -89,7 +91,7 @@ public final class {{className}} {
   public static PermissionCheck {{name}}({{permissionObject}} item) {
     return check(ACTION_{{constant}}.concat(Constants.SEPARATOR).concat(item.getId()));
   }
-  
+
   /**
    * Returns permission action check for {{name}} action.
    *
@@ -147,14 +149,14 @@ public final class {{className}} {
      return actionCheck(customAction);
    }
   {{/custom}}
-  
+
   // private methods
-  
+
   private static PermissionActionCheck<{{permissionObject}}> actionCheck(String action) {
-    return new PermissionActionCheck<>(TYPE.concat(Constants.SEPARATOR).concat(action));
+    return new DefaultPermissionActionCheck<>(TYPE.concat(Constants.SEPARATOR).concat(action));
   }
 
   private static PermissionCheck check(String permission) {
-    return new PermissionCheck(TYPE.concat(Constants.SEPARATOR).concat(permission));
+    return new DefaultPermissionCheck(TYPE.concat(Constants.SEPARATOR).concat(permission));
   }
 }

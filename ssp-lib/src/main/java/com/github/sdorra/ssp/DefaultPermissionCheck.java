@@ -33,14 +33,31 @@ import org.apache.shiro.authz.AuthorizationException;
  *
  * @author Sebastian Sdorra
  */
-public abstract class PermissionCheck {
+public final class DefaultPermissionCheck extends PermissionCheck {
+
+  private final String permission;
+
+  /**
+   * Constructs a new instance.
+   *
+   * @param permission permission for the check
+   */
+  public DefaultPermissionCheck(String permission)
+  {
+    this.permission = permission;
+  }
+
+  //~--- methods --------------------------------------------------------------
 
   /**
    * Checks if the current authenticated user has the required permission.
    *
    * @throws AuthorizationException if current user lacks the required permission
    */
-  public abstract void check();
+  @Override
+  public void check() {
+    SecurityUtils.getSubject().checkPermission(permission);
+  }
 
   //~--- get methods ----------------------------------------------------------
 
@@ -49,13 +66,24 @@ public abstract class PermissionCheck {
    *
    * @return {@code true} if the current authenticated user has the required permission
    */
-  public abstract boolean isPermitted();
+  @Override
+  public boolean isPermitted() {
+    return SecurityUtils.getSubject().isPermitted(permission);
+  }
 
   /**
    * Returns the permission as apache shiro string.
    *
    * @return shiro permission string
    */
-  public abstract String asShiroString();
+  @Override
+  public String asShiroString() {
+    return permission;
+  }
+
+  @Override
+  public String toString() {
+    return permission;
+  }
 
 }
