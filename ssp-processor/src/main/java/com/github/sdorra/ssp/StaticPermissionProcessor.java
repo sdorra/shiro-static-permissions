@@ -47,14 +47,14 @@ import java.util.Set;
  */
 @SupportedAnnotationTypes("*")
 @MetaInfServices(Processor.class)
-@SuppressWarnings({"Since16", "Since15"})
-@SupportedSourceVersion(SourceVersion.RELEASE_7)
+@SuppressWarnings({"Since16"})
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class StaticPermissionProcessor extends AbstractProcessor {
 
   private static final String TEMPLATE = "com/github/sdorra/ssp/template.mustache";
 
-  private StaticPermissionModelBuilder builder;
-  private MustacheFactory mustacheFactory;
+  private final StaticPermissionModelBuilder builder;
+  private final MustacheFactory mustacheFactory;
 
   public StaticPermissionProcessor() {
     this(new StaticPermissionModelBuilder(), new DefaultMustacheFactory());
@@ -69,15 +69,15 @@ public class StaticPermissionProcessor extends AbstractProcessor {
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
     for (Element e : roundEnv.getElementsAnnotatedWith(StaticPermissions.class)) {
       if (e.getKind() == ElementKind.CLASS || e.getKind() == ElementKind.INTERFACE) {
-        handle(builder, (TypeElement) e);
+        handle(builder, processingEnv, (TypeElement) e);
       }
     }
     return true;
   }
 
-  private void handle(StaticPermissionModelBuilder builder, TypeElement typeElement) {
+  private void handle(StaticPermissionModelBuilder builder, ProcessingEnvironment processingEnv, TypeElement typeElement) {
     try {
-      StaticPermissionModel model = builder.process(typeElement);
+      StaticPermissionModel model = builder.process(processingEnv, typeElement);
 
       write(model);
     }

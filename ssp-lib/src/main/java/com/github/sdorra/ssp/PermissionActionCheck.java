@@ -35,7 +35,29 @@ import org.apache.shiro.subject.Subject;
  * @author Sebastian Sdorra
  * @param <T> permission object type
  */
-public abstract class PermissionActionCheck<T extends PermissionObject> {
+public final class PermissionActionCheck<T extends PermissionObject> {
+
+  private final String prefix;
+  private final Subject subject;
+
+  private final PermissionActionCheckInterceptor<T> interceptor;
+
+  /**
+   * Constructs a new instance.
+   *
+   * @param typedAction type of permission action
+   */
+  public PermissionActionCheck(String typedAction) {
+    this(typedAction, new PermissionActionCheckInterceptor<T>() {});
+  }
+
+  public PermissionActionCheck(String typedAction, PermissionActionCheckInterceptor<T> interceptor) {
+    this.prefix = typedAction.concat(Constants.SEPARATOR);
+    this.subject = SecurityUtils.getSubject();
+    this.interceptor = interceptor;
+  }
+
+  //~--- methods --------------------------------------------------------------
 
   /**
    * Checks if the current authenticated user has the permission for the action with the given object id.
@@ -44,7 +66,9 @@ public abstract class PermissionActionCheck<T extends PermissionObject> {
    *
    * @throws AuthorizationException if current user lacks the required permission
    */
-  public abstract void check(String id);
+  public void check (String id){
+    interceptor.check(subject, id, () -> subject.checkPermission(asShiroString(id)));
+  }
 
   /**
    * Checks if the current authenticated user has the permission for the action with the given object.
@@ -53,7 +77,11 @@ public abstract class PermissionActionCheck<T extends PermissionObject> {
    *
    * @throws AuthorizationException if current user lacks the required permission
    */
-  public abstract void check(T item);
+  public void check (T item){
+    interceptor.check(subject, item, () -> check(item.getId()));
+  }
+
+  //~--- get methods ----------------------------------------------------------
 
   /**
    * Returns {@code true} if the current authenticated user has the permission for the action with the given object id.
@@ -62,7 +90,9 @@ public abstract class PermissionActionCheck<T extends PermissionObject> {
    *
    * @return {@code true} if the current authenticated user has the required permission
    */
-  public abstract boolean isPermitted(String id);
+  public boolean isPermitted (String id){
+    return interceptor.isPermitted(subject, id, () -> subject.isPermitted(asShiroString(id)));
+  }
 
   /**
    * Returns {@code true} if the current authenticated user has the permission for the action with the given object.
@@ -71,7 +101,9 @@ public abstract class PermissionActionCheck<T extends PermissionObject> {
    *
    * @return {@code true} if the current authenticated user has the required permission
    */
-  public abstract boolean isPermitted(T item);
+  public boolean isPermitted (T item){
+    return interceptor.isPermitted(subject, item, () -> isPermitted(item.getId()));
+  }
 
   /**
    * Returns the shiro permission string for the given item.
@@ -80,7 +112,9 @@ public abstract class PermissionActionCheck<T extends PermissionObject> {
    *
    * @return shiro permission string
    */
-  public abstract String asShiroString(T item);
+  public String asShiroString (T item){
+    return asShiroString(item.getId());
+  }
 
   /**
    * Returns the shiro permission string for the given id.
@@ -89,5 +123,11 @@ public abstract class PermissionActionCheck<T extends PermissionObject> {
    *
    * @return shiro permission string
    */
-  public abstract String asShiroString(String id);
+  public String asShiroString (String id){
+    return prefix.concat(nullToEmpty(id));
+  }
+
+  private String nullToEmpty (String id){
+    return id == null ? "" : id;
+  }
 }

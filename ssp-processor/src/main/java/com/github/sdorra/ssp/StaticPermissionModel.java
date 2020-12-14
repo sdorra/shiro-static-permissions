@@ -23,6 +23,11 @@
  */
 package com.github.sdorra.ssp;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Model which is used as input for the template engine.
  *
@@ -34,10 +39,11 @@ public class StaticPermissionModel {
   private final String className;
   private final String type;
   private final String permissionObject;
-  private final Iterable<Action> permissions;
-  private final Iterable<Action> globalPermissions;
+  private final Collection<Action> permissions;
+  private final Collection<Action> globalPermissions;
   private final boolean custom;
   private final boolean customGlobal;
+  private final Map<String, GuardValue> guards;
 
   /**
    * Constructs a new instance.
@@ -48,9 +54,10 @@ public class StaticPermissionModel {
    * @param permissionObject class of permission object
    * @param permissions list of item specific permissions
    * @param globalPermissions list of global permissions
+   * @param guardsForPermissions map of permissions to class names of guard implementations
    */
   StaticPermissionModel(StaticPermissions annotation, String packageName, String className, String permissionObject,
-    Iterable<Action> permissions, Iterable<Action> globalPermissions) {
+                        Collection<Action> permissions, Collection<Action> globalPermissions, Map<String, String> guardsForPermissions) {
     this.packageName = packageName;
     this.className = className;
     this.type = annotation.value();
@@ -59,6 +66,29 @@ public class StaticPermissionModel {
     this.globalPermissions = globalPermissions;
     this.custom = annotation.custom();
     this.customGlobal = annotation.customGlobal();
+    this.guards = new HashMap<>();
+
+    guardsForPermissions.entrySet()
+            .stream()
+            .filter(entry -> entry.getKey() != null)
+            .forEach(
+                    guard -> guards.put(guard.getKey(), new GuardValue(guard.getKey().toUpperCase(), guard.getValue())));
+
+    String fallbackPermissionGuard = guardsForPermissions.getOrDefault(null, "com.github.sdorra.ssp.PassThroughPermissionGuard");
+
+    this.permissions.stream()
+            .map(Action::getName)
+            .filter(permission -> !guards.containsKey(permission))
+            .forEach(permission -> guards.put(permission, new GuardValue(permission.toUpperCase(), fallbackPermissionGuard))
+    );
+
+    this.globalPermissions.stream()
+            .map(Action::getName)
+            .filter(permission -> !guards.containsKey(permission))
+            .forEach(permission -> guards.put(permission, new GuardValue(permission.toUpperCase(), fallbackPermissionGuard))
+    );
+
+    guards.put("__custom", new GuardValue("__CUSTOM", fallbackPermissionGuard));
   }
 
   /**
@@ -140,5 +170,27 @@ public class StaticPermissionModel {
    */
   public boolean isCustomGlobal() {
     return customGlobal;
+  }
+
+  public Set<Map.Entry<String, GuardValue>> getGuards() {
+    return guards.entrySet();
+  }
+
+  public static class GuardValue {
+    private final String name;
+    private final String clazz;
+
+    public GuardValue(String name, String clazz) {
+      this.name = name;
+      this.clazz = clazz;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public String getClazz() {
+      return clazz;
+    }
   }
 }

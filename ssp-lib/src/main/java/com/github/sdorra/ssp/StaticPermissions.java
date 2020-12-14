@@ -34,38 +34,38 @@ import java.lang.annotation.Target;
 /**
  * The {@link StaticPermissions} annotation is picked up by a annotation processor, which generates a class for static
  * shiro permissions for the annotated class.
- * 
+ *
  * @author Sebastian Sdorra
  */
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.SOURCE)
 public @interface StaticPermissions {
-  
+
   /**
    * Returns type of permission.
-   * 
+   *
    * @return type of permission
    */
   String value();
-  
+
   /**
    * Name of the generated class.
-   * 
+   *
    * @return name of generated class
    */
   String generatedClass() default "";
-  
+
   /**
    * Returns item related permissions.
-   * 
+   *
    * @return item related permissions
    */
   String[] permissions() default {"read", "modify", "delete"};
-  
+
   /**
    * Returns global permissions.
-   * 
+   *
    * @return global permissions
    */
   String[] globalPermissions() default {"create"};
@@ -83,4 +83,6 @@ public @interface StaticPermissions {
    * @return custom permission
    */
   boolean customGlobal() default false;
+
+  Guard[] guards() default {};
 }

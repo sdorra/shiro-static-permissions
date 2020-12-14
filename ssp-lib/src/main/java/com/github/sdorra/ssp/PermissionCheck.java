@@ -27,20 +27,44 @@ package com.github.sdorra.ssp;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationException;
+import org.apache.shiro.subject.Subject;
 
 /**
  * Checks a defined shiro permission.
  *
  * @author Sebastian Sdorra
  */
-public abstract class PermissionCheck {
+public final class PermissionCheck {
+
+  private final String permission;
+  private final PermissionCheckInterceptorWrapper interceptorWrapper;
+
+  /**
+   * Constructs a new instance.
+   *
+   * @param permission permission for the check
+   */
+  public PermissionCheck(String permission) {
+    this(permission, PermissionCheckInterceptorWrapper.none());
+  }
+
+  public PermissionCheck(String permission, PermissionCheckInterceptorWrapper interceptorWrapper)
+  {
+    this.permission = permission;
+    this.interceptorWrapper = interceptorWrapper;
+  }
+
+  //~--- methods --------------------------------------------------------------
 
   /**
    * Checks if the current authenticated user has the required permission.
    *
    * @throws AuthorizationException if current user lacks the required permission
    */
-  public abstract void check();
+  public void check() {
+    Subject subject = SecurityUtils.getSubject();
+    interceptorWrapper.check(subject, () -> subject.checkPermission(permission));
+  }
 
   //~--- get methods ----------------------------------------------------------
 
@@ -49,13 +73,23 @@ public abstract class PermissionCheck {
    *
    * @return {@code true} if the current authenticated user has the required permission
    */
-  public abstract boolean isPermitted();
+  public boolean isPermitted() {
+    Subject subject = SecurityUtils.getSubject();
+    return interceptorWrapper.isPermitted(subject, () -> subject.isPermitted(permission));
+  }
 
   /**
    * Returns the permission as apache shiro string.
    *
    * @return shiro permission string
    */
-  public abstract String asShiroString();
+  public String asShiroString() {
+    return permission;
+  }
+
+  @Override
+  public String toString() {
+    return permission;
+  }
 
 }

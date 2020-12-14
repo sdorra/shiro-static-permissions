@@ -51,7 +51,7 @@ public class PermissionActionCheckTest {
    */
   @Test
   public void testIsPermitted() {
-    PermissionActionCheck<Repository> create = new DefaultPermissionActionCheck<>("repository:create");
+    PermissionActionCheck<Repository> create = new PermissionActionCheck<>("repository:create");
     assertTrue(create.isPermitted("abc"));
     assertTrue(create.isPermitted(new Repository("abc")));
     assertFalse(create.isPermitted("123"));
@@ -63,7 +63,7 @@ public class PermissionActionCheckTest {
    */
   @Test
   public void testCheck() {
-    PermissionActionCheck<Repository> delete = new DefaultPermissionActionCheck<>("repository:delete");
+    PermissionActionCheck<Repository> delete = new PermissionActionCheck<>("repository:delete");
     delete.check("123");
     delete.check(new Repository("123"));
   }
@@ -73,7 +73,7 @@ public class PermissionActionCheckTest {
    */
   @Test(expected = AuthorizationException.class)
   public void testCheckWithInvalidId() {
-    PermissionActionCheck<Repository> delete = new DefaultPermissionActionCheck<>("repository:delete");
+    PermissionActionCheck<Repository> delete = new PermissionActionCheck<>("repository:delete");
     delete.check("abc");
   }
 
@@ -82,7 +82,7 @@ public class PermissionActionCheckTest {
    */
   @Test(expected = AuthorizationException.class)
   public void testCheckWithInvalidItem() {
-    PermissionActionCheck<Repository> delete = new DefaultPermissionActionCheck<>("repository:delete");
+    PermissionActionCheck<Repository> delete = new PermissionActionCheck<>("repository:delete");
     delete.check(new Repository("abc"));
   }
 
@@ -91,7 +91,7 @@ public class PermissionActionCheckTest {
    */
   @Test
   public void testAsShiroStringId() {
-    PermissionActionCheck<Repository> delete = new DefaultPermissionActionCheck<>("repository:delete");
+    PermissionActionCheck<Repository> delete = new PermissionActionCheck<>("repository:delete");
     assertEquals("repository:delete:abc", delete.asShiroString("abc"));
   }
 
@@ -100,7 +100,7 @@ public class PermissionActionCheckTest {
    */
   @Test
   public void testAsShiroStringItem() {
-    PermissionActionCheck<Repository> delete = new DefaultPermissionActionCheck<>("repository:delete");
+    PermissionActionCheck<Repository> delete = new PermissionActionCheck<>("repository:delete");
     assertEquals("repository:delete:abc", delete.asShiroString(new Repository("abc")));
   }
 

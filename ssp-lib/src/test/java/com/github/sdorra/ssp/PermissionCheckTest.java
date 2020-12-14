@@ -50,7 +50,7 @@ public class PermissionCheckTest {
    */
   @Test
   public void testCheck() {
-    PermissionCheck check = new DefaultPermissionCheck("something:create");
+    PermissionCheck check = new PermissionCheck("something:create");
     check.check();
   }
 
@@ -59,7 +59,7 @@ public class PermissionCheckTest {
    */
   @Test(expected = AuthorizationException.class)
   public void testCheckWithoutRequiredPermission() {
-    PermissionCheck check = new DefaultPermissionCheck("other:create");
+    PermissionCheck check = new PermissionCheck("other:create");
     check.check();
   }
 
@@ -68,9 +68,9 @@ public class PermissionCheckTest {
    */
   @Test
   public void testIsPermitted() {
-    assertTrue(new DefaultPermissionCheck("something:create").isPermitted());
-    assertTrue(new DefaultPermissionCheck("something:delete").isPermitted());
-    assertFalse(new DefaultPermissionCheck("other:delete").isPermitted());
+    assertTrue(new PermissionCheck("something:create").isPermitted());
+    assertTrue(new PermissionCheck("something:delete").isPermitted());
+    assertFalse(new PermissionCheck("other:delete").isPermitted());
   }
 
   /**
@@ -78,7 +78,7 @@ public class PermissionCheckTest {
    */
   @Test
   public void testAsShiroString() {
-    assertEquals("something:create", new DefaultPermissionCheck("something:create").asShiroString());
+    assertEquals("something:create", new PermissionCheck("something:create").asShiroString());
   }
 
   /**
@@ -86,6 +86,6 @@ public class PermissionCheckTest {
    */
   @Test
   public void testToString() {
-    assertEquals("something:create", new DefaultPermissionCheck("something:create").toString());
+    assertEquals("something:create", new PermissionCheck("something:create").toString());
   }
 }
