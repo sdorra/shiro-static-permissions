@@ -49,43 +49,42 @@ final class StaticPermissionModelBuilder {
    * Processes the type element and generates the model.
    *
    *
-   * @param processingEnv
+   * @param processingEnv environment for the annotation processing
    * @param classElement class element
    *
    * @return model for template input
    */
   StaticPermissionModel process(ProcessingEnvironment processingEnv, TypeElement classElement) {
-    if (!TypeElements.isAssignableFrom(PermissionObject.class, classElement)) {
-      throw new IllegalStateException(
-        "static permissions can only be generated if the target class implements the PermissionObject interface"
-      );
-    }
+      if (!TypeElements.isAssignableFrom(PermissionObject.class, classElement)) {
+          throw new IllegalStateException(
+                  "static permissions can only be generated if the target class implements the PermissionObject interface"
+          );
+      }
 
-    StaticPermissions staticPermissions = classElement.getAnnotation(StaticPermissions.class);
-    if (staticPermissions == null) {
-      throw new IllegalStateException("type element is not annotated with StaticPermissions annotation");
-    }
+      StaticPermissions staticPermissions = classElement.getAnnotation(StaticPermissions.class);
+      if (staticPermissions == null) {
+          throw new IllegalStateException("type element is not annotated with StaticPermissions annotation");
+      }
 
       Map<String, String> permissionsWithGuards = extractGuards(processingEnv, classElement);
 
-
       String className = classElement.getSimpleName().toString();
-    String packageName = getPackageName(classElement);
+      String packageName = getPackageName(classElement);
 
-    String generatedClass = staticPermissions.generatedClass();
-    if (generatedClass.isEmpty()) {
-      generatedClass = className.concat("Permissions");
-    }
+      String generatedClass = staticPermissions.generatedClass();
+      if (generatedClass.isEmpty()) {
+          generatedClass = className.concat("Permissions");
+      }
 
-    return new StaticPermissionModel(
-      staticPermissions,
-      packageName,
-      generatedClass,
-      className,
-      convert(staticPermissions.permissions()),
-      convert(staticPermissions.globalPermissions()),
-      permissionsWithGuards
-    );
+      return new StaticPermissionModel(
+              staticPermissions,
+              packageName,
+              generatedClass,
+              className,
+              convert(staticPermissions.permissions()),
+              convert(staticPermissions.globalPermissions()),
+              permissionsWithGuards
+      );
   }
 
     private Map<String, String> extractGuards(ProcessingEnvironment processingEnv, TypeElement classElement) {
@@ -108,6 +107,7 @@ final class StaticPermissionModelBuilder {
                                                     .get()
                                                     .forEach(guardedPermissionValue -> permissionsWithGuards.put(guardedPermissionValue.getValue().toString(), guardClass.toString()));
                                         } else {
+                                            // No explicit permissions mentioned. Use this as fallback.
                                             permissionsWithGuards.put(null, guardClass.toString());
                                         }
                                     });
