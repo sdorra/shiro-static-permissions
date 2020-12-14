@@ -26,6 +26,6 @@ public interface PermissionActionCheckInterceptor<T extends PermissionObject> {
     }
 
     default boolean isPermitted(Subject subject, T item, BooleanSupplier delegate) {
-        return delegate.getAsBoolean();
+        return isPermitted(subject, item.getId(), delegate);
     }
 }
