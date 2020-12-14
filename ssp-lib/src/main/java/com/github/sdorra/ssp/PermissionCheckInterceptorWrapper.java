@@ -4,13 +4,13 @@ import org.apache.shiro.subject.Subject;
 
 import java.util.function.BooleanSupplier;
 
-public abstract class PermissionCheckInterceptorWrapper {
+public interface PermissionCheckInterceptorWrapper {
 
-    public abstract void check(Subject subject, Runnable delegate);
+    void check(Subject subject, Runnable delegate);
 
-    public abstract boolean isPermitted(Subject subject, BooleanSupplier delegate);
+    boolean isPermitted(Subject subject, BooleanSupplier delegate);
 
-    public static PermissionCheckInterceptorWrapper none() {
+    static PermissionCheckInterceptorWrapper none() {
         return new PermissionCheckInterceptorWrapper() {
 
             @Override
@@ -25,7 +25,7 @@ public abstract class PermissionCheckInterceptorWrapper {
         };
     }
 
-    public static PermissionCheckInterceptorWrapper forRaw(PermissionActionCheckInterceptor<?> interceptor) {
+    static PermissionCheckInterceptorWrapper forRaw(PermissionActionCheckInterceptor<?> interceptor) {
         return new PermissionCheckInterceptorWrapper() {
 
             @Override
@@ -40,7 +40,7 @@ public abstract class PermissionCheckInterceptorWrapper {
         };
     }
 
-    public static <T extends PermissionObject> PermissionCheckInterceptorWrapper forItem(T item, PermissionActionCheckInterceptor<T> interceptor) {
+    static <T extends PermissionObject> PermissionCheckInterceptorWrapper forItem(T item, PermissionActionCheckInterceptor<T> interceptor) {
         return new PermissionCheckInterceptorWrapper() {
 
             @Override
@@ -55,7 +55,7 @@ public abstract class PermissionCheckInterceptorWrapper {
         };
     }
 
-    public static PermissionCheckInterceptorWrapper forId(String id, PermissionActionCheckInterceptor<?> interceptor) {
+    static PermissionCheckInterceptorWrapper forId(String id, PermissionActionCheckInterceptor<?> interceptor) {
         return new PermissionCheckInterceptorWrapper() {
 
             @Override
