@@ -84,5 +84,10 @@ public @interface StaticPermissions {
    */
   boolean customGlobal() default false;
 
+  /**
+   * Register additional guards to intercept permission checks for some or all permissions.
+   *
+   * @return additional guards
+   */
   Guard[] guards() default {};
 }
