@@ -69,6 +69,11 @@ public class RepositoryPermissionsTest {
         assertTrue(RepositoryPermissions.custom("merge", "1234").isPermitted());
     }
 
+    @Test
+    public void testInterceptor() {
+        assertFalse(RepositoryPermissions.delete("mustNotBeDeleted").isPermitted());
+    }
+
     @Test(expected = UnauthorizedException.class)
     public void testCheck() {
         RepositoryPermissions.read("123").check();
