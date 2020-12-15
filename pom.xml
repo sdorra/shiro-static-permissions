@@ -72,6 +72,36 @@
 
   </dependencies>
 
+  <dependencyManagement>
+    <dependencies>
+      
+      <dependency>
+        <groupId>org.apache.shiro</groupId>
+        <artifactId>shiro-core</artifactId>
+        <version>1.4.2</version>
+      </dependency>
+  
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>1.2.3</version>
+      </dependency>
+  
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>1.7.30</version>
+      </dependency>
+  
+      <dependency>
+        <groupId>com.github.sdorra</groupId>
+        <artifactId>shiro-unit</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
   <build>
     <plugins>
 

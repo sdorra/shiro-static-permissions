@@ -30,9 +30,20 @@
     </dependency>
 
     <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>com.github.sdorra</groupId>
       <artifactId>shiro-unit</artifactId>
-      <version>1.0.0</version>
       <scope>test</scope>
     </dependency>
 
