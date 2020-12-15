@@ -11,6 +11,8 @@ public @interface Guard {
     /**
      * The concrete implementation of the {@link PermissionGuard} that should be used. The
      * class given here has to have a default constructor.
+     *
+     * @return class which implements the {@link PermissionGuard}
      */
     Class<? extends PermissionGuard> guard();
 
@@ -18,6 +20,8 @@ public @interface Guard {
      * Optional list of permissions the guard should be used for. If this is omitted, the
      * guard will be used for every permission no other guard has been explicitly registered
      * for.
+     * 
+     * @return array of guarded permissions
      */
     String[] guardedPermissions() default {};
 }

@@ -70,6 +70,8 @@ public interface PermissionActionCheckInterceptor<T extends PermissionObject> {
      *
      * @param subject  The current subject.
      * @param delegate The original check performed by shiro.
+     *
+     * @return {@code true} if the current authenticated user has the required permission
      */
     default boolean isPermitted(Subject subject, BooleanSupplier delegate) {
         return delegate.getAsBoolean();
@@ -86,6 +88,8 @@ public interface PermissionActionCheckInterceptor<T extends PermissionObject> {
      * @param subject  The current subject.
      * @param id       The id of the permission object.
      * @param delegate The original check performed by shiro.
+     *
+     * @return {@code true} if the current authenticated user has the required permission
      */
     default boolean isPermitted(Subject subject, String id, BooleanSupplier delegate) {
         return delegate.getAsBoolean();
@@ -102,6 +106,8 @@ public interface PermissionActionCheckInterceptor<T extends PermissionObject> {
      * @param subject  The current subject.
      * @param item     The permission object.
      * @param delegate The original check performed by shiro.
+     *
+     * @return {@code true} if the current authenticated user has the required permission
      */
     default boolean isPermitted(Subject subject, T item, BooleanSupplier delegate) {
         return isPermitted(subject, item.getId(), delegate);
