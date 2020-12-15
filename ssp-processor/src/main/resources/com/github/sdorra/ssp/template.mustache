@@ -21,12 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
- 
+
 package {{packageName}};
 
 import com.github.sdorra.ssp.Constants;
 import com.github.sdorra.ssp.PermissionCheck;
 import com.github.sdorra.ssp.PermissionActionCheck;
+import com.github.sdorra.ssp.PermissionActionCheckInterceptor;
+import com.github.sdorra.ssp.PermissionCheckInterceptorWrapper;
+import com.github.sdorra.ssp.PermissionGuard;
 
 /**
  * Permission checks for {{type}} related permissions.
@@ -38,36 +41,42 @@ public final class {{className}} {
   /** permission type */
   private static final String TYPE = "{{type}}";
   {{#globalPermissions}}
-  
+
   /** {{name}} permission */
   public static final String ACTION_{{constant}} = "{{name}}";
-  {{/globalPermissions}}  
+  {{/globalPermissions}}
   {{#permissions}}
-  
+
   /** {{name}} permission */
   public static final String ACTION_{{constant}} = "{{name}}";
   {{/permissions}}
-  
+
+  // guards
+  {{#guards}}
+
+  private static final PermissionGuard<{{permissionObject}}> {{value.name}}_GUARD = new {{value.clazz}}();
+  {{/guards}}
+
   // constructor
-  
+
   private {{className}}(){}
 
   // public global permissions methods
   {{#globalPermissions}}
-  
+
   /**
    * Returns permission check for {{name}} action.
    *
    * @return permission check for {{name}} action
    */
   public static PermissionCheck {{name}}() {
-    return check(ACTION_{{constant}});
+    return check(ACTION_{{constant}}, createPermissionCheckWrapper("{{name}}", {{constant}}_GUARD));
   }
   {{/globalPermissions}}
-  
+
   // public permission methods
   {{#permissions}}
-  
+
   /**
    * Returns permission check for {{name}} action.
    *
@@ -76,9 +85,9 @@ public final class {{className}} {
    * @return permission check for {{name}} action
    */
   public static PermissionCheck {{name}}(String id) {
-    return check(ACTION_{{constant}}.concat(Constants.SEPARATOR).concat(id));
+    return check(ACTION_{{constant}}.concat(Constants.SEPARATOR).concat(id), createPermissionCheckWrapper("{{name}}", id, {{constant}}_GUARD));
   }
-  
+
   /**
    * Returns permission check for {{name}} action.
    *
@@ -87,16 +96,16 @@ public final class {{className}} {
    * @return permission check for {{name}} action
    */
   public static PermissionCheck {{name}}({{permissionObject}} item) {
-    return check(ACTION_{{constant}}.concat(Constants.SEPARATOR).concat(item.getId()));
+    return check(ACTION_{{constant}}.concat(Constants.SEPARATOR).concat(item.getId()), createPermissionCheckWrapper("{{name}}", item, {{constant}}_GUARD));
   }
-  
+
   /**
    * Returns permission action check for {{name}} action.
    *
    * @return permission action check for {{name}} action
    */
   public static PermissionActionCheck<{{permissionObject}}> {{name}}() {
-    return actionCheck(ACTION_{{constant}});
+    return actionCheck(ACTION_{{constant}}, {{constant}}_GUARD);
   }
   {{/permissions}}
 
@@ -107,7 +116,7 @@ public final class {{className}} {
    * @return permission check for the given custom global action
    */
    public static PermissionCheck custom(String customAction) {
-     return check(customAction);
+     return check(customAction, createPermissionCheckWrapper(customAction, __CUSTOM_GUARD));
    }
   {{/customGlobal}}
 
@@ -121,7 +130,7 @@ public final class {{className}} {
    * @return permission check for a custom action
    */
    public static PermissionCheck custom(String customAction, String id) {
-     return check(customAction.concat(Constants.SEPARATOR).concat(id));
+     return check(customAction.concat(Constants.SEPARATOR).concat(id), createPermissionCheckWrapper(customAction, id, __CUSTOM_GUARD));
    }
 
   /**
@@ -133,7 +142,7 @@ public final class {{className}} {
    * @return permission check for custom action
    */
    public static PermissionCheck custom(String customAction, {{permissionObject}} item) {
-     return check(customAction.concat(Constants.SEPARATOR).concat(item.getId()));
+     return check(customAction.concat(Constants.SEPARATOR).concat(item.getId()), createPermissionCheckWrapper(customAction, item, __CUSTOM_GUARD));
    }
 
   /**
@@ -144,17 +153,36 @@ public final class {{className}} {
    * @return permission action check for custom action
    */
    public static PermissionActionCheck<{{permissionObject}}> customActionCheck(String customAction) {
-     return actionCheck(customAction);
+     return actionCheck(customAction, __CUSTOM_GUARD);
    }
   {{/custom}}
-  
+
   // private methods
-  
-  private static PermissionActionCheck<{{permissionObject}}> actionCheck(String action) {
-    return new PermissionActionCheck<>(TYPE.concat(Constants.SEPARATOR).concat(action));
+
+  private static PermissionCheckInterceptorWrapper createPermissionCheckWrapper(String customAction, PermissionGuard<{{permissionObject}}> guard) {
+    PermissionActionCheckInterceptor<{{permissionObject}}> interceptor = guard.intercept(customAction);
+    PermissionCheckInterceptorWrapper wrapper = PermissionCheckInterceptorWrapper.forRaw(interceptor);
+    return wrapper;
   }
 
-  private static PermissionCheck check(String permission) {
-    return new PermissionCheck(TYPE.concat(Constants.SEPARATOR).concat(permission));
+  private static PermissionCheckInterceptorWrapper createPermissionCheckWrapper(String customAction, String id, PermissionGuard<{{permissionObject}}> guard) {
+    PermissionActionCheckInterceptor<{{permissionObject}}> interceptor = guard.intercept(customAction);
+    PermissionCheckInterceptorWrapper wrapper = PermissionCheckInterceptorWrapper.forId(id, interceptor);
+    return wrapper;
+  }
+
+  private static PermissionCheckInterceptorWrapper createPermissionCheckWrapper(String customAction, {{permissionObject}} item, PermissionGuard<{{permissionObject}}> guard) {
+    PermissionActionCheckInterceptor<{{permissionObject}}> interceptor = guard.intercept(customAction);
+    PermissionCheckInterceptorWrapper wrapper = PermissionCheckInterceptorWrapper.forItem(item, interceptor);
+    return wrapper;
+  }
+
+  private static PermissionActionCheck<{{permissionObject}}> actionCheck(String action, PermissionGuard<{{permissionObject}}> guard) {
+    PermissionActionCheckInterceptor<{{permissionObject}}> interceptor = guard.intercept(action);
+    return new PermissionActionCheck<>(TYPE.concat(Constants.SEPARATOR).concat(action), interceptor);
+  }
+
+  private static PermissionCheck check(String permission, PermissionCheckInterceptorWrapper wrapper) {
+    return new PermissionCheck(TYPE.concat(Constants.SEPARATOR).concat(permission), wrapper);
   }
 }

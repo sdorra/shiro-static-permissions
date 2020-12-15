@@ -27,6 +27,7 @@ package com.github.sdorra.ssp;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationException;
+import org.apache.shiro.subject.Subject;
 
 /**
  * Checks a defined shiro permission.
@@ -36,15 +37,21 @@ import org.apache.shiro.authz.AuthorizationException;
 public final class PermissionCheck {
 
   private final String permission;
+  private final PermissionCheckInterceptorWrapper interceptorWrapper;
 
   /**
    * Constructs a new instance.
    *
    * @param permission permission for the check
    */
-  public PermissionCheck(String permission)
+  public PermissionCheck(String permission) {
+    this(permission, PermissionCheckInterceptorWrapper.none());
+  }
+
+  public PermissionCheck(String permission, PermissionCheckInterceptorWrapper interceptorWrapper)
   {
     this.permission = permission;
+    this.interceptorWrapper = interceptorWrapper;
   }
 
   //~--- methods --------------------------------------------------------------
@@ -55,7 +62,8 @@ public final class PermissionCheck {
    * @throws AuthorizationException if current user lacks the required permission
    */
   public void check() {
-    SecurityUtils.getSubject().checkPermission(permission);
+    Subject subject = SecurityUtils.getSubject();
+    interceptorWrapper.check(subject, () -> subject.checkPermission(permission));
   }
 
   //~--- get methods ----------------------------------------------------------
@@ -66,7 +74,8 @@ public final class PermissionCheck {
    * @return {@code true} if the current authenticated user has the required permission
    */
   public boolean isPermitted() {
-    return SecurityUtils.getSubject().isPermitted(permission);
+    Subject subject = SecurityUtils.getSubject();
+    return interceptorWrapper.isPermitted(subject, () -> subject.isPermitted(permission));
   }
 
   /**

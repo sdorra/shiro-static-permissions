@@ -40,14 +40,21 @@ public final class PermissionActionCheck<T extends PermissionObject> {
   private final String prefix;
   private final Subject subject;
 
+  private final PermissionActionCheckInterceptor<T> interceptor;
+
   /**
    * Constructs a new instance.
    *
    * @param typedAction type of permission action
    */
   public PermissionActionCheck(String typedAction) {
+    this(typedAction, new PermissionActionCheckInterceptor<T>() {});
+  }
+
+  public PermissionActionCheck(String typedAction, PermissionActionCheckInterceptor<T> interceptor) {
     this.prefix = typedAction.concat(Constants.SEPARATOR);
     this.subject = SecurityUtils.getSubject();
+    this.interceptor = interceptor;
   }
 
   //~--- methods --------------------------------------------------------------
@@ -59,8 +66,8 @@ public final class PermissionActionCheck<T extends PermissionObject> {
    *
    * @throws AuthorizationException if current user lacks the required permission
    */
-  public void check(String id) {
-    subject.checkPermission(asShiroString(id));
+  public void check (String id){
+    interceptor.check(subject, id, () -> subject.checkPermission(asShiroString(id)));
   }
 
   /**
@@ -70,8 +77,8 @@ public final class PermissionActionCheck<T extends PermissionObject> {
    *
    * @throws AuthorizationException if current user lacks the required permission
    */
-  public void check(T item) {
-    check(item.getId());
+  public void check (T item){
+    interceptor.check(subject, item, () -> check(item.getId()));
   }
 
   //~--- get methods ----------------------------------------------------------
@@ -83,8 +90,8 @@ public final class PermissionActionCheck<T extends PermissionObject> {
    *
    * @return {@code true} if the current authenticated user has the required permission
    */
-  public boolean isPermitted(String id) {
-    return subject.isPermitted(asShiroString(id));
+  public boolean isPermitted (String id){
+    return interceptor.isPermitted(subject, id, () -> subject.isPermitted(asShiroString(id)));
   }
 
   /**
@@ -94,8 +101,8 @@ public final class PermissionActionCheck<T extends PermissionObject> {
    *
    * @return {@code true} if the current authenticated user has the required permission
    */
-  public boolean isPermitted(T item) {
-    return isPermitted(item.getId());
+  public boolean isPermitted (T item){
+    return interceptor.isPermitted(subject, item, () -> isPermitted(item.getId()));
   }
 
   /**
@@ -105,7 +112,7 @@ public final class PermissionActionCheck<T extends PermissionObject> {
    *
    * @return shiro permission string
    */
-  public String asShiroString(T item) {
+  public String asShiroString (T item){
     return asShiroString(item.getId());
   }
 
@@ -116,11 +123,11 @@ public final class PermissionActionCheck<T extends PermissionObject> {
    *
    * @return shiro permission string
    */
-  public String asShiroString(String id) {
+  public String asShiroString (String id){
     return prefix.concat(nullToEmpty(id));
   }
 
-  private String nullToEmpty(String id){
+  private String nullToEmpty (String id){
     return id == null ? "" : id;
   }
 }
