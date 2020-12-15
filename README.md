@@ -64,7 +64,7 @@ public class Repository implements PermissionObject {
 
 ## Real world example
 
-[SCM-Manager](https://bitbucket.org/sdorra/scm-manager):
+[SCM-Manager](https://scm-manager.org):
 
-* Annotation: [`User`](https://bitbucket.org/sdorra/scm-manager/src/2735fa5f6f9602c5cf4b9a09b5637cfc343cb300/scm-core/src/main/java/sonia/scm/user/User.java)
-* Permission Check: [`UserManager`](https://bitbucket.org/sdorra/scm-manager/src/a392fe563b9b879e4480de3354e7890ca87a684f/scm-webapp/src/main/java/sonia/scm/user/DefaultUserManager.java#lines-285)
+* Annotation: [`User`](https://github.com/scm-manager/scm-manager/blob/3f018c22557eb2e7804f0c4e9100121992b760b2/scm-core/src/main/java/sonia/scm/user/User.java#L51)
+* Permission Check: [`UserManager`](https://github.com/scm-manager/scm-manager/blob/3f018c22557eb2e7804f0c4e9100121992b760b2/scm-webapp/src/main/java/sonia/scm/user/DefaultUserManager.java#L250)
